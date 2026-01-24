@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
+import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -9,40 +10,36 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Login />,
-  },
-  {
-    path: "/register",
-    element: <Register />,
-  },
-  {
-    path: "/dashboard",
-    element: (
-      <ProtectedRoute>
-        <Dashboard />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/add-event",
-    element: (
-      <ProtectedRoute>
-        <AddEvent />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/edit-event/:id",
-    element: (
-      <ProtectedRoute>
-        <EditEvent />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/help",
-    element: <Help />,
+    element: <Layout />,
+    children: [
+      { path: "/", element: <Login /> },
+      { path: "/register", element: <Register /> },
+      {
+        path: "/dashboard",
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/add-event",
+        element: (
+          <ProtectedRoute>
+            <AddEvent />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/edit-event/:id",
+        element: (
+          <ProtectedRoute>
+            <EditEvent />
+          </ProtectedRoute>
+        ),
+      },
+      { path: "/help", element: <Help /> },
+    ],
   },
 ]);
 

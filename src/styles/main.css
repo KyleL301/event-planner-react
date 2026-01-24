@@ -66,3 +66,34 @@ nav button {
   margin-top: 80px; /* pushes content below fixed header */
   padding: 24px;
 }
+
+.event-card {
+  background: white;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+}
+
+.event-card button {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+form input,
+form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+}
+
+form textarea {
+  min-height: 80px;
+}
+
+form button {
+  padding: 10px;
+  cursor: pointer;
+}
