@@ -2,34 +2,31 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+/*
+  Login page:
+  - Allows registered users to log in
+  - Uses autocomplete attributes for better UX and accessibility
+*/
 function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  // Local state for login inputs
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
+  /*
+    Handle login submission:
+    - Calls login(email, password)
+    - Redirects to dashboard on success
+  */
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.email || !formData.password) {
-      alert("Please enter email and password");
-      return;
+    const success = login(email, password);
+    if (success) {
+      navigate("/dashboard");
     }
-
-    // For this capstone, we accept any login
-    login({ email: formData.email });
-
-    navigate("/dashboard");
   };
 
   return (
@@ -38,19 +35,23 @@ function Login() {
 
       <form onSubmit={handleSubmit}>
         <input
-          type="email"
+          id="login-email"
           name="email"
+          type="email"
           placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
-          type="password"
+          id="login-password"
           name="password"
+          type="password"
           placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
+          autoComplete="current-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
 
         <button type="submit">Login</button>

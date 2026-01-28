@@ -1,19 +1,32 @@
 import { createBrowserRouter } from "react-router-dom";
-import Layout from "./components/Layout";
+
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import AddEvent from "./pages/AddEvent";
 import EditEvent from "./pages/EditEvent";
 import Help from "./pages/Help";
-import ProtectedRoute from "./components/ProtectedRoute";
 
+import ProtectedRoute from "./components/ProtectedRoute";
+import Header from "./components/Header";
+
+/*
+  Router configuration:
+  - Public routes: Login, Register, Help
+  - Protected routes: Dashboard, Add Event, Edit Event
+  - Header is shown on all pages
+*/
 const router = createBrowserRouter([
   {
-    element: <Layout />,
+    path: "/",
+    element: <Header />,
     children: [
-      { path: "/", element: <Login /> },
+      // Public routes
+      { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
+      { path: "/help", element: <Help /> },
+
+      // Protected routes
       {
         path: "/dashboard",
         element: (
@@ -38,7 +51,9 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      { path: "/help", element: <Help /> },
+
+      // Default route
+      { path: "*", element: <Login /> },
     ],
   },
 ]);

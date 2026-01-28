@@ -1,31 +1,56 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+/*
+  Header component (Layout component)
+
+  IMPORTANT:
+  - This component acts as a layout
+  - <Outlet /> is REQUIRED to render child routes
+*/
 function Header() {
-  const { isAuthenticated, logout } = useAuth();
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
+
+  /*
+    Logs the user out and redirects to login
+  */
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
 
   return (
-    <header className="header">
-      <h1 className="logo">Event Planner</h1>
+    <>
+      <header className="header">
+        <h1 className="logo">Event Planner</h1>
 
-      <nav>
-        {isAuthenticated && (
-          <>
-            <NavLink to="/dashboard">Dashboard</NavLink>
-            <NavLink to="/add-event">Add Event</NavLink>
-            <NavLink to="/help">Help</NavLink>
-            <button onClick={logout}>Logout</button>
-          </>
-        )}
+        <nav>
+          {/* Help is always visible */}
+          <NavLink to="/help">Help</NavLink>
 
-        {!isAuthenticated && (
-          <>
-            <NavLink to="/">Login</NavLink>
-            <NavLink to="/register">Register</NavLink>
-          </>
-        )}
-      </nav>
-    </header>
+          {/* Not logged in */}
+          {!currentUser && (
+            <>
+              <NavLink to="/login">Login</NavLink>
+              <NavLink to="/register">Register</NavLink>
+            </>
+          )}
+
+          {/* Logged in */}
+          {currentUser && (
+            <>
+              <NavLink to="/dashboard">Dashboard</NavLink>
+              <NavLink to="/add-event">Add Event</NavLink>
+              <button onClick={handleLogout}>Logout</button>
+            </>
+          )}
+        </nav>
+      </header>
+
+      {/* 👇 THIS IS WHAT WAS MISSING */}
+      <Outlet />
+    </>
   );
 }
 

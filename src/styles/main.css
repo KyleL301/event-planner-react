@@ -1,19 +1,81 @@
+/* ========== Global Reset ========== */
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
   margin: 0;
+  font-family: Arial, sans-serif;
   background-color: #f4f6f8;
 }
 
-.auth-container {
-  max-width: 400px;
-  margin: 80px auto;
+/* ========== Header (Always Safe, Never Clips) ========== */
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #1f2937;
+  color: white;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 18px;
+  margin: 0;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+nav a,
+nav button {
+  color: white;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 6px 0;
+}
+
+nav a.active {
+  text-decoration: underline;
+}
+
+/* ========== Page Layout ========== */
+.page {
   padding: 24px;
+  padding-top: 160px; /* space for dynamic header height */
+  min-height: 100vh;
+}
+
+/* ========== Auth Pages (Login & Register) ========== */
+.auth-container {
+  max-width: 420px;
+  margin: 0 auto;
   background: white;
-  border-radius: 6px;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
 .auth-container h2 {
   text-align: center;
+  margin-bottom: 16px;
+}
+
+.auth-container form {
+  display: flex;
+  flex-direction: column;
 }
 
 .auth-container input {
@@ -22,66 +84,7 @@ body {
   margin-bottom: 12px;
 }
 
-.auth-container button {
-  width: 100%;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: #1f2937;
-  color: white;
-  padding: 12px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo {
-  margin: 0;
-  font-size: 18px;
-}
-
-nav a {
-  color: white;
-  margin-right: 16px;
-  text-decoration: none;
-}
-
-nav a.active {
-  text-decoration: underline;
-}
-
-nav button {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-}
-
-.page {
-  margin-top: 80px; /* pushes content below fixed header */
-  padding: 24px;
-}
-
-.event-card {
-  background: white;
-  padding: 16px;
-  margin-bottom: 16px;
-  border-radius: 6px;
-}
-
-.event-card button {
-  background: #dc2626;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  cursor: pointer;
-}
-
+/* ========== Forms (Add/Edit Event) ========== */
 form input,
 form textarea {
   width: 100%;
@@ -93,7 +96,42 @@ form textarea {
   min-height: 80px;
 }
 
-form button {
+/* ========== Buttons ========== */
+button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
   padding: 10px;
+  border-radius: 6px;
+  font-weight: 500;
   cursor: pointer;
+}
+
+button:hover {
+  background-color: #1e40af;
+}
+
+/* Delete button override */
+.event-card button {
+  background-color: #dc2626;
+}
+
+.event-card button:hover {
+  background-color: #b91c1c;
+}
+
+/* ========== Event Cards ========== */
+.event-card {
+  background: white;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+}
+
+/* ========== Small Screen Safety ========== */
+@media (max-height: 700px) {
+  .auth-container {
+    margin-top: 24px;
+    margin-bottom: 24px;
+  }
 }
