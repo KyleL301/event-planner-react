@@ -9,7 +9,7 @@ body {
   background-color: #f4f6f8;
 }
 
-/* ========== Header (Always Safe, Never Clips) ========== */
+/* ========== Header ========== */
 .header {
   position: fixed;
   top: 0;

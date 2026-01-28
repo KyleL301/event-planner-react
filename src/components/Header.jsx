@@ -48,7 +48,7 @@ function Header() {
         </nav>
       </header>
 
-      {/* 👇 THIS IS WHAT WAS MISSING */}
+      {}
       <Outlet />
     </>
   );
