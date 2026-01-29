@@ -1,3 +1,5 @@
+<!-- Updated after assessor feedback: enforced user-specific events and authentication fixes -->
+
 This project is a personal event planner web application built using React and Vite.  
 It allows users to register, log in, and manage their own personal or professional events.  
 Each user can only view and manage events they have created, ensuring proper user-specific data handling.
