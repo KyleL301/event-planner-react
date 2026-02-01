@@ -1,35 +1,52 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { useEvents } from "../context/EventContext";
+import { useEffect, useState } from "react";
 
+/*
+  EditEvent page
+
+*/
 function EditEvent() {
-  const { id } = useParams();
+  const { id } = useParams(); // id is ALWAYS a string
   const navigate = useNavigate();
   const { events, updateEvent } = useEvents();
 
-  const existingEvent = events.find((event) => event.id === Number(id));
+  const [formData, setFormData] = useState(null);
 
-  const [formData, setFormData] = useState({
-    title: "",
-    date: "",
-    time: "",
-    location: "",
-    description: "",
-  });
-
+  /*
+    Load event safely with ID normalization
+  */
   useEffect(() => {
-    if (existingEvent) {
-      setFormData(existingEvent);
+    if (!events || events.length === 0) {
+      return;
     }
-  }, [existingEvent]);
 
+    // Convert both IDs to strings before comparison
+    const eventToEdit = events.find((event) => String(event.id) === String(id));
+
+    if (!eventToEdit) {
+      navigate("/dashboard");
+      return;
+    }
+
+    setFormData(eventToEdit);
+  }, [events, id, navigate]);
+
+  /*
+    Handle input changes
+  */
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
+  /*
+    Submit updated event
+  */
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -37,12 +54,8 @@ function EditEvent() {
     navigate("/dashboard");
   };
 
-  if (!existingEvent) {
-    return (
-      <div className="page">
-        <p>Event not found.</p>
-      </div>
-    );
+  if (!formData) {
+    return <p className="page">Loading event...</p>;
   }
 
   return (
@@ -51,10 +64,10 @@ function EditEvent() {
 
       <form onSubmit={handleSubmit}>
         <input
-          type="text"
           name="title"
           value={formData.title}
           onChange={handleChange}
+          required
         />
 
         <input
@@ -62,6 +75,7 @@ function EditEvent() {
           name="date"
           value={formData.date}
           onChange={handleChange}
+          required
         />
 
         <input
@@ -69,10 +83,10 @@ function EditEvent() {
           name="time"
           value={formData.time}
           onChange={handleChange}
+          required
         />
 
         <input
-          type="text"
           name="location"
           value={formData.location}
           onChange={handleChange}
@@ -84,7 +98,7 @@ function EditEvent() {
           onChange={handleChange}
         />
 
-        <button type="submit">Update Event</button>
+        <button type="submit">Save Changes</button>
       </form>
     </div>
   );
