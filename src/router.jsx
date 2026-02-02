@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -12,6 +12,7 @@ import Header from "./components/Header";
 
 /*
   Router configuration:
+  - App ALWAYS starts at /login
   - Public routes: Login, Register, Help
   - Protected routes: Dashboard, Add Event, Edit Event
   - Header is shown on all pages
@@ -21,14 +22,17 @@ const router = createBrowserRouter([
     path: "/",
     element: <Header />,
     children: [
+      // Force root to login for clear auth flow
+      { index: true, element: <Navigate to="/login" replace /> },
+
       // Public routes
-      { path: "/login", element: <Login /> },
-      { path: "/register", element: <Register /> },
-      { path: "/help", element: <Help /> },
+      { path: "login", element: <Login /> },
+      { path: "register", element: <Register /> },
+      { path: "help", element: <Help /> },
 
       // Protected routes
       {
-        path: "/dashboard",
+        path: "dashboard",
         element: (
           <ProtectedRoute>
             <Dashboard />
@@ -36,7 +40,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/add-event",
+        path: "add-event",
         element: (
           <ProtectedRoute>
             <AddEvent />
@@ -44,7 +48,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/edit-event/:id",
+        path: "edit-event/:id",
         element: (
           <ProtectedRoute>
             <EditEvent />
@@ -52,8 +56,8 @@ const router = createBrowserRouter([
         ),
       },
 
-      // Default route
-      { path: "*", element: <Login /> },
+      // Fallback
+      { path: "*", element: <Navigate to="/login" replace /> },
     ],
   },
 ]);
