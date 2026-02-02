@@ -1,23 +1,19 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 
 /*
   EventContext
-  - Manages all event-related state
-  - Ensures events are scoped to the logged-in user
-  - Provides CRUD operations (Create, Read, Update, Delete)
+  - Stores and manages all event data
+  - Ensures events are scoped per logged-in user
 */
 const EventContext = createContext();
 
 export function EventProvider({ children }) {
   const { currentUser } = useAuth();
-
-  // Holds only the logged-in user's events
   const [events, setEvents] = useState([]);
 
   /*
-    Load events whenever the logged-in user changes
-    This prevents users from seeing each other's events
+    Load events when the logged-in user changes
   */
   useEffect(() => {
     if (!currentUser) {
@@ -27,7 +23,6 @@ export function EventProvider({ children }) {
 
     const allEvents = JSON.parse(localStorage.getItem("events")) || [];
 
-    // Only load events belonging to the current user
     const userEvents = allEvents.filter(
       (event) => event.userEmail === currentUser.email,
     );
@@ -36,7 +31,7 @@ export function EventProvider({ children }) {
   }, [currentUser]);
 
   /*
-    Add a new event for the logged-in user
+    Add a new event
   */
   const addEvent = (newEvent) => {
     const allEvents = JSON.parse(localStorage.getItem("events")) || [];
@@ -45,13 +40,11 @@ export function EventProvider({ children }) {
 
     localStorage.setItem("events", JSON.stringify(updatedEvents));
 
-    // Update local state immediately
-    setEvents((prevEvents) => [...prevEvents, newEvent]);
+    setEvents((prev) => [...prev, newEvent]);
   };
 
   /*
-    Update an existing event safely
-    This fixes the TypeError when editing events
+    UPDATE EXISTING EVENT  ← THIS IS THE FIX
   */
   const updateEvent = (updatedEvent) => {
     const allEvents = JSON.parse(localStorage.getItem("events")) || [];
@@ -62,7 +55,6 @@ export function EventProvider({ children }) {
 
     localStorage.setItem("events", JSON.stringify(updatedEvents));
 
-    // Refresh state for the current user only
     const userEvents = updatedEvents.filter(
       (event) => event.userEmail === currentUser.email,
     );
@@ -71,7 +63,7 @@ export function EventProvider({ children }) {
   };
 
   /*
-    Delete an event belonging to the logged-in user
+    Delete event
   */
   const deleteEvent = (id) => {
     const allEvents = JSON.parse(localStorage.getItem("events")) || [];
@@ -80,7 +72,7 @@ export function EventProvider({ children }) {
 
     localStorage.setItem("events", JSON.stringify(updatedEvents));
 
-    setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
+    setEvents((prev) => prev.filter((event) => event.id !== id));
   };
 
   return (
@@ -88,7 +80,7 @@ export function EventProvider({ children }) {
       value={{
         events,
         addEvent,
-        updateEvent,
+        updateEvent, // 🚨 MUST BE HERE
         deleteEvent,
       }}
     >
@@ -97,7 +89,6 @@ export function EventProvider({ children }) {
   );
 }
 
-// Custom hook to access EventContext
 export function useEvents() {
   return useContext(EventContext);
 }
