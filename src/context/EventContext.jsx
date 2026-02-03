@@ -3,9 +3,11 @@ import { useAuth } from "./AuthContext";
 
 /*
   EventContext
-  - Stores and manages all event data
+  - Manages all event data
+  - Provides add, update, and delete operations
   - Ensures events are scoped per logged-in user
 */
+
 const EventContext = createContext();
 
 export function EventProvider({ children }) {
@@ -13,7 +15,7 @@ export function EventProvider({ children }) {
   const [events, setEvents] = useState([]);
 
   /*
-    Load events when the logged-in user changes
+    Load events for the logged-in user
   */
   useEffect(() => {
     if (!currentUser) {
@@ -44,13 +46,15 @@ export function EventProvider({ children }) {
   };
 
   /*
-    UPDATE EXISTING EVENT  ← THIS IS THE FIX
+    UPDATE EVENT 
   */
   const updateEvent = (updatedEvent) => {
+    console.log("updateEvent called:", updatedEvent);
+
     const allEvents = JSON.parse(localStorage.getItem("events")) || [];
 
     const updatedEvents = allEvents.map((event) =>
-      event.id === updatedEvent.id ? updatedEvent : event,
+      String(event.id) === String(updatedEvent.id) ? updatedEvent : event,
     );
 
     localStorage.setItem("events", JSON.stringify(updatedEvents));
@@ -63,16 +67,20 @@ export function EventProvider({ children }) {
   };
 
   /*
-    Delete event
+    Delete an event
   */
   const deleteEvent = (id) => {
     const allEvents = JSON.parse(localStorage.getItem("events")) || [];
 
-    const updatedEvents = allEvents.filter((event) => event.id !== id);
+    const updatedEvents = allEvents.filter(
+      (event) => String(event.id) !== String(id),
+    );
 
     localStorage.setItem("events", JSON.stringify(updatedEvents));
 
-    setEvents((prev) => prev.filter((event) => event.id !== id));
+    setEvents((prev) =>
+      prev.filter((event) => String(event.id) !== String(id)),
+    );
   };
 
   return (
@@ -80,7 +88,7 @@ export function EventProvider({ children }) {
       value={{
         events,
         addEvent,
-        updateEvent, // 🚨 MUST BE HERE
+        updateEvent, //
         deleteEvent,
       }}
     >
