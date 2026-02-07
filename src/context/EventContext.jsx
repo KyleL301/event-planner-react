@@ -4,8 +4,8 @@ import { useAuth } from "./AuthContext";
 /*
   EventContext
   - Manages all event data
-  - Provides add, update, and delete operations
-  - Ensures events are scoped per logged-in user
+  - Provides add, update, and delete functionality
+  - Events are scoped to the logged-in user
 */
 
 const EventContext = createContext();
@@ -37,20 +37,17 @@ export function EventProvider({ children }) {
   */
   const addEvent = (newEvent) => {
     const allEvents = JSON.parse(localStorage.getItem("events")) || [];
-
     const updatedEvents = [...allEvents, newEvent];
 
     localStorage.setItem("events", JSON.stringify(updatedEvents));
-
-    setEvents((prev) => [...prev, newEvent]);
+    setEvents((prevEvents) => [...prevEvents, newEvent]);
   };
 
   /*
-    UPDATE EVENT 
+    UPDATE EVENT
+    - REQUIRED by EditEvent.jsx
   */
   const updateEvent = (updatedEvent) => {
-    console.log("updateEvent called:", updatedEvent);
-
     const allEvents = JSON.parse(localStorage.getItem("events")) || [];
 
     const updatedEvents = allEvents.map((event) =>
@@ -78,8 +75,8 @@ export function EventProvider({ children }) {
 
     localStorage.setItem("events", JSON.stringify(updatedEvents));
 
-    setEvents((prev) =>
-      prev.filter((event) => String(event.id) !== String(id)),
+    setEvents((prevEvents) =>
+      prevEvents.filter((event) => String(event.id) !== String(id)),
     );
   };
 
@@ -88,7 +85,7 @@ export function EventProvider({ children }) {
       value={{
         events,
         addEvent,
-        updateEvent, //
+        updateEvent,
         deleteEvent,
       }}
     >
