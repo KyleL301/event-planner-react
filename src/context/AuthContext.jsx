@@ -20,17 +20,20 @@ export function AuthProvider({ children }) {
   );
 
   /*
-    Registers a new user:
-    - Saves the user to the list of users
-    - Logs them in immediately
-  */
+  Registers a new user:
+  - Saves the user to localStorage
+  - DOES NOT log them in automatically
+  - User must log in manually after registering
+*/
   const register = (userData) => {
+    // Add new user to existing users array
     const updatedUsers = [...users, userData];
-    setUsers(updatedUsers);
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
 
-    setCurrentUser(userData);
-    localStorage.setItem("currentUser", JSON.stringify(userData));
+    // Update state
+    setUsers(updatedUsers);
+
+    // Persist users in localStorage
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
   };
 
   /*

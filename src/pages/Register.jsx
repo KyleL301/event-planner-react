@@ -32,9 +32,16 @@ function Register() {
     - Validates required fields
     - Registers user
   */
+  /*
+  Handle registration submission
+  - Validates fields
+  - Creates user account
+  - Redirects to login instead of dashboard
+*/
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent page refresh
 
+    // Basic validation to ensure all fields are filled
     if (
       !formData.name ||
       !formData.username ||
@@ -45,8 +52,20 @@ function Register() {
       return;
     }
 
+    /*
+    Call register function from AuthContext.
+    This saves the new user in localStorage.
+    IMPORTANT: We do NOT log the user in automatically.
+    The user must log in manually after registering.
+  */
     register(formData);
-    navigate("/dashboard");
+
+    /*
+    Redirect to login page after successful registration.
+    This ensures proper authentication flow:
+    Register → Login → Dashboard
+  */
+    navigate("/login");
   };
 
   return (

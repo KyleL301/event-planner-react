@@ -135,3 +135,8 @@ button:hover {
     margin-bottom: 24px;
   }
 }
+
+/* Push login/register below fixed header for better UX */
+.auth-container {
+  margin-top: 120px; /* prevents header overlap */
+}
