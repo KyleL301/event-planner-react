@@ -8,21 +8,18 @@ import EditEvent from "./pages/EditEvent";
 import Help from "./pages/Help";
 
 import ProtectedRoute from "./components/ProtectedRoute";
-import Header from "./components/Header";
+import Layout from "./components/Layout"; // use Layout instead of Header
 
 /*
   Router configuration:
-  - App ALWAYS starts at /login
-  - Public routes: Login, Register, Help
-  - Protected routes: Dashboard, Add Event, Edit Event
-  - Header is shown on all pages
+  Layout wraps ALL pages so they always stay inside
+  the provider tree (Auth + Event context).
 */
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Header />,
+    element: <Layout />,
     children: [
-      // Force root to login for clear auth flow
       { index: true, element: <Navigate to="/login" replace /> },
 
       // Public routes
@@ -56,7 +53,6 @@ const router = createBrowserRouter([
         ),
       },
 
-      // Fallback
       { path: "*", element: <Navigate to="/login" replace /> },
     ],
   },
