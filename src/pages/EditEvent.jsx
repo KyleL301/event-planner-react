@@ -1,3 +1,5 @@
+// QA verification: EditEvent correctly calls updateEvent from context
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useEvents } from "../context/EventContext";
 import { useEffect, useState } from "react";

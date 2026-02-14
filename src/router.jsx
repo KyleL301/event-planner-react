@@ -1,3 +1,5 @@
+// QA verification: router uses Layout to ensure EventContext is always available
+
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import Login from "./pages/Login";

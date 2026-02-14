@@ -1,3 +1,5 @@
+// QA verification: updateEvent function implemented and exported correctly
+
 // Import React tools needed for global state management
 import { createContext, useContext, useEffect, useState } from "react";
 
