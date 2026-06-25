@@ -5,22 +5,38 @@ function EventCard({ event, onDelete }) {
 
   return (
     <div className="event-card">
-      <h3>{event.title}</h3>
+      <h3 className="event-title">📅 {event.title}</h3>
 
-      <p>
-        <strong>Date:</strong> {event.date}
-      </p>
-      <p>
-        <strong>Time:</strong> {event.time}
-      </p>
-      <p>
-        <strong>Location:</strong> {event.location}
-      </p>
-      <p>{event.description}</p>
+      <div className="event-details">
+        <p>
+          <strong>🗓 Date:</strong> {event.date}
+        </p>
 
-      <button onClick={() => navigate(`/edit-event/${event.id}`)}>Edit</button>
+        <p>
+          <strong>🕒 Time:</strong> {event.time}
+        </p>
 
-      <button onClick={() => onDelete(event.id)}>Delete</button>
+        <p>
+          <strong>📍 Location:</strong> {event.location}
+        </p>
+      </div>
+
+      <div className="event-description">
+        <p>{event.description}</p>
+      </div>
+
+      <div className="event-actions">
+        <button
+          className="edit-btn"
+          onClick={() => navigate(`/edit-event/${event.id}`)}
+        >
+          Edit
+        </button>
+
+        <button className="delete-btn" onClick={() => onDelete(event.id)}>
+          Delete
+        </button>
+      </div>
     </div>
   );
 }

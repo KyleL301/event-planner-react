@@ -1,4 +1,4 @@
-import { NavLink, useNavigate, Outlet } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 /*
@@ -47,9 +47,6 @@ function Header() {
           )}
         </nav>
       </header>
-
-      {}
-      <Outlet />
     </>
   );
 }
