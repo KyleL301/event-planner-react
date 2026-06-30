@@ -24,6 +24,7 @@ function AddEvent() {
   const [time, setTime] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
+  const [error, setError] = useState("");
 
   /*
     Handles form submission:
@@ -36,9 +37,11 @@ function AddEvent() {
 
     // Basic validation to ensure required fields are filled
     if (!title || !date || !time || !location) {
-      alert("Please fill in all required fields");
+      setError("Please fill in all required fields.");
       return;
     }
+
+    setError("");
 
     // Create a new event object linked to the current user
     const newEvent = {
@@ -61,6 +64,8 @@ function AddEvent() {
   return (
     <div className="page auth-container">
       <h2>Add Event</h2>
+
+      {error && <div className="error-message">{error}</div>}
 
       <form onSubmit={handleSubmit}>
         <input

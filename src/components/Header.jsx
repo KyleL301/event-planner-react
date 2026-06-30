@@ -41,8 +41,14 @@ function Header() {
           {currentUser && (
             <>
               <NavLink to="/dashboard">Dashboard</NavLink>
+
               <NavLink to="/add-event">Add Event</NavLink>
-              <button onClick={handleLogout}>Logout</button>
+
+              <span className="user-name">👤 {currentUser.name}</span>
+
+              <button className="logout-btn" onClick={handleLogout}>
+                Logout
+              </button>
             </>
           )}
         </nav>

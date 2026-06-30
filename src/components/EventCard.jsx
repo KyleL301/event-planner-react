@@ -9,7 +9,12 @@ function EventCard({ event, onDelete }) {
 
       <div className="event-details">
         <p>
-          <strong>🗓 Date:</strong> {event.date}
+          <strong>🗓 Date:</strong>{" "}
+          {new Date(event.date).toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}
         </p>
 
         <p>
@@ -33,7 +38,18 @@ function EventCard({ event, onDelete }) {
           Edit
         </button>
 
-        <button className="delete-btn" onClick={() => onDelete(event.id)}>
+        <button
+          className="delete-btn"
+          onClick={() => {
+            const confirmed = window.confirm(
+              "Are you sure you want to delete this event?",
+            );
+
+            if (confirmed) {
+              onDelete(event.id);
+            }
+          }}
+        >
           Delete
         </button>
       </div>

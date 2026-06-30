@@ -20,20 +20,50 @@ export function AuthProvider({ children }) {
   );
 
   /*
-  Registers a new user:
-  - Saves the user to localStorage
-  - DOES NOT log them in automatically
-  - User must log in manually after registering
-*/
+    Registers a new user:
+    - Prevents duplicate email registrations
+    - Saves the user to localStorage
+    - DOES NOT log them in automatically
+    - User must log in manually after registering
+  */
   const register = (userData) => {
-    // Add new user to existing users array
+    // Check if a user with this email already exists
+    const existingUser = users.find(
+      (user) => user.email?.toLowerCase() === userData.email?.toLowerCase(),
+    );
+
+    // Stop registration if the email is already registered
+    if (existingUser) {
+      return {
+        success: false,
+        message: "An account with this email already exists.",
+      };
+    }
+
+    // Password must meet minimum security requirements
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    if (!passwordRegex.test(userData.password)) {
+      return {
+        success: false,
+        message:
+          "Password must be at least 8 characters and include an uppercase letter, a lowercase letter, and a number.",
+      };
+    }
+
+    // Add the new user
     const updatedUsers = [...users, userData];
 
     // Update state
     setUsers(updatedUsers);
 
-    // Persist users in localStorage
+    // Save to localStorage
     localStorage.setItem("users", JSON.stringify(updatedUsers));
+
+    // Tell the calling component that registration succeeded
+    return {
+      success: true,
+    };
   };
 
   /*
@@ -64,7 +94,14 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ currentUser, register, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        currentUser,
+        register,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

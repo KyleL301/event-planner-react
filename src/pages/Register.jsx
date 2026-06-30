@@ -3,15 +3,28 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 /*
-  Register page:
-  - Creates a new user
-  - Uses autocomplete attributes for better form handling
+  Register Page
+
+  Responsibilities:
+  - Collect new user information
+  - Validate required fields
+  - Format the user's name consistently
+  - Register the user through AuthContext
+  - Display validation errors inside the page
 */
 function Register() {
+  // Access the register function from the authentication context
   const { register } = useAuth();
+
+  // Used to redirect users after successful registration
   const navigate = useNavigate();
 
-  // Local state for registration form
+  /*
+    Stores all form input values.
+
+    React state is used because the values change as the
+    user types into the form.
+  */
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -19,7 +32,20 @@ function Register() {
     password: "",
   });
 
-  // Update form state when inputs change
+  /*
+    Stores validation errors.
+
+    Instead of using browser alerts, React displays this
+    message inside the page.
+  */
+  const [error, setError] = useState("");
+
+  /*
+    Updates whichever input the user is typing into.
+
+    The input's "name" attribute determines which property
+    inside formData gets updated.
+  */
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -28,49 +54,77 @@ function Register() {
   };
 
   /*
-    Handle registration:
-    - Validates required fields
-    - Registers user
-  */
-  /*
-  Handle registration submission
-  - Validates fields
-  - Creates user account
-  - Redirects to login instead of dashboard
-*/
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent page refresh
+    Converts names into Proper Case.
 
-    // Basic validation to ensure all fields are filled
+    Examples:
+
+    kyle liberty
+    ↓
+    Kyle Liberty
+
+    KYLE LIBERTY
+    ↓
+    Kyle Liberty
+  */
+  const formatName = (name) => {
+    return name
+      .trim()
+      .split(" ")
+      .filter((word) => word !== "")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
+
+  /*
+    Handles registration when the form is submitted.
+  */
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Ensure every required field has a value
     if (
       !formData.name ||
       !formData.username ||
       !formData.email ||
       !formData.password
     ) {
-      alert("All fields are required");
+      setError("All fields are required.");
       return;
     }
 
-    /*
-    Call register function from AuthContext.
-    This saves the new user in localStorage.
-    IMPORTANT: We do NOT log the user in automatically.
-    The user must log in manually after registering.
-  */
-    register(formData);
+    // Remove any previous error message
+    setError("");
 
     /*
-    Redirect to login page after successful registration.
-    This ensures proper authentication flow:
-    Register → Login → Dashboard
-  */
+      Create a copy of the form data.
+
+      The user's name is formatted before it is saved.
+      This keeps the data consistent throughout the app.
+    */
+    const formattedData = {
+      ...formData,
+      name: formatName(formData.name),
+    };
+
+    // Attempt to register the new user
+    const result = register(formattedData);
+
+    // Registration failed
+    if (!result.success) {
+      setError(result.message);
+      return;
+    }
+
+    // Registration successful
     navigate("/login");
   };
 
   return (
     <div className="page auth-container">
       <h2>Register</h2>
+
+      {/* Display validation errors when they exist */}
+      {error && <div className="error-message">{error}</div>}
 
       <form onSubmit={handleSubmit}>
         <input
