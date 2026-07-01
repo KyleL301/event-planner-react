@@ -4,38 +4,67 @@ import { useEvents } from "../context/EventContext";
 import { useAuth } from "../context/AuthContext";
 
 /*
-  AddEvent page:
-  - Allows a logged-in user to create a new event
-  - Each event is linked to the logged-in user
+=====================================================
+Add Event Page
+
+Responsibilities
+- Create a new event
+- Validate required fields
+- Associate the event with the logged-in user
+- Allow the user to assign a category
+=====================================================
 */
+
 function AddEvent() {
-  // Access event context to add a new event
+  // Access Event Context
   const { addEvent } = useEvents();
 
   // Access the currently logged-in user
   const { currentUser } = useAuth();
 
-  // Used to redirect the user after creating an event
+  // Used to redirect after creating an event
   const navigate = useNavigate();
 
-  // Local state for form inputs
+  /*
+    =====================================================
+    Form State
+
+    Each piece of state represents one field in
+    the Add Event form.
+
+    These are controlled components, meaning React
+    always controls the displayed values.
+    =====================================================
+  */
+
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
+
+  /*
+    Category defaults to "Personal".
+
+    This ensures every event always has
+    a valid category even if the user
+    doesn't change it.
+  */
+  const [category, setCategory] = useState("Personal");
+
+  // Validation message
   const [error, setError] = useState("");
 
   /*
-    Handles form submission:
-    - Validates input
-    - Creates a new event
-    - Links the event to the logged-in user
+    =====================================================
+    Handle Form Submission
+    =====================================================
   */
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Basic validation to ensure required fields are filled
+    // Validate required fields
     if (!title || !date || !time || !location) {
       setError("Please fill in all required fields.");
       return;
@@ -43,7 +72,12 @@ function AddEvent() {
 
     setError("");
 
-    // Create a new event object linked to the current user
+    /*
+      Create the new event object.
+
+      Notice that we've simply extended the
+      existing event model by adding a category.
+    */
     const newEvent = {
       id: Date.now(),
       title,
@@ -51,13 +85,14 @@ function AddEvent() {
       time,
       location,
       description,
-      userEmail: currentUser.email, // 🔑 event ownership
+      category,
+      userEmail: currentUser.email,
     };
 
-    // Add the event to global state
+    // Save the event
     addEvent(newEvent);
 
-    // Redirect back to dashboard
+    // Redirect to Dashboard
     navigate("/dashboard");
   };
 
@@ -93,6 +128,17 @@ function AddEvent() {
           value={location}
           onChange={(e) => setLocation(e.target.value)}
         />
+
+        {/* ================= Event Category ================= */}
+
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          <option value="Personal">📌 Personal</option>
+          <option value="Work">💼 Work</option>
+          <option value="Fitness">🏋 Fitness</option>
+          <option value="Study">🎓 Study</option>
+          <option value="Family">👨‍👩‍👧 Family</option>
+          <option value="Social">🎉 Social</option>
+        </select>
 
         <textarea
           placeholder="Description (optional)"

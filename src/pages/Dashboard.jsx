@@ -39,25 +39,35 @@ function Dashboard() {
 
   /*
     =====================================================
+    Helper Function
+
+    Combines an event's date and time into one Date object.
+
+    Why?
+
+    Comparing only the date causes events on the same day
+    to appear in the wrong order.
+
+    By combining the date and time we can sort events
+    accurately down to the minute.
+    =====================================================
+  */
+  const getEventDateTime = (event) => new Date(`${event.date}T${event.time}`);
+
+  /*
+    =====================================================
     Sort ALL Events
 
     Used ONLY for the Upcoming Event widget.
-
-    This list is never filtered because the widget
-    should always display the user's next upcoming
-    event regardless of the current search.
     =====================================================
   */
   const sortedAllEvents = [...events].sort(
-    (a, b) => new Date(a.date) - new Date(b.date),
+    (a, b) => getEventDateTime(a) - getEventDateTime(b),
   );
 
   /*
     =====================================================
     Filter Events
-
-    The search box only affects the event list,
-    not the Upcoming Event widget.
     =====================================================
   */
   const filteredEvents = events.filter((event) =>
@@ -68,35 +78,29 @@ function Dashboard() {
     =====================================================
     Sort Filtered Events
 
-    Create a copy before sorting because sort()
-    mutates arrays and React state should always
-    remain immutable.
+    Uses both date AND time.
     =====================================================
   */
   const sortedEvents = [...filteredEvents].sort(
-    (a, b) => new Date(a.date) - new Date(b.date),
+    (a, b) => getEventDateTime(a) - getEventDateTime(b),
   );
 
   /*
     =====================================================
     Upcoming Event
 
-    Find the first event that occurs today
-    or in the future.
+    Find the first event that has not yet started.
 
-    Since sortedAllEvents is already sorted,
-    the first matching event is automatically
-    the next upcoming event.
+    Unlike the previous implementation,
+    this compares BOTH the date and the time.
     =====================================================
   */
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const now = new Date();
 
-  const upcomingEvent = sortedAllEvents.find((event) => {
-    const eventDate = new Date(event.date);
-    return eventDate >= today;
-  });
+  const upcomingEvent = sortedAllEvents.find(
+    (event) => getEventDateTime(event) >= now,
+  );
 
   return (
     <div className="page">

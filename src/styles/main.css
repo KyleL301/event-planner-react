@@ -354,3 +354,25 @@ button:hover {
 .upcoming-event p {
   margin: 8px 0;
 }
+/* ================= Event Category ================= */
+
+form select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+/* ================= Category Badge ================= */
+
+.category-badge {
+  display: inline-block;
+  background-color: #2563eb;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
