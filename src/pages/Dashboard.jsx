@@ -30,19 +30,24 @@ function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
 
   /*
-    Derived State
+  Derived State
 
-    Instead of storing another copy of the
-    events array, we calculate the filtered
-    events every render.
+  First filter the events based on the search term.
 
-    This keeps React as the single source
-    of truth.
-  */
+  Then create a copy of the filtered array and sort it
+  by date in ascending order (earliest event first).
+
+  We use the spread operator (...) before sort()
+  because sort() mutates arrays and React state
+  should always be treated as immutable.
+*/
   const filteredEvents = events.filter((event) =>
     event.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
+  const sortedEvents = [...filteredEvents].sort(
+    (a, b) => new Date(a.date) - new Date(b.date),
+  );
   return (
     <div className="page">
       {/* ================= Dashboard Header ================= */}
@@ -57,7 +62,7 @@ function Dashboard() {
 
           <div className="dashboard-stats">
             <div className="stat-card">
-              📅 {filteredEvents.length}{" "}
+              📅 {sortedEvents.length}{" "}
               {filteredEvents.length === 1 ? "Event" : "Events"}
             </div>
           </div>
@@ -80,14 +85,14 @@ function Dashboard() {
 
       {/* ================= Empty State ================= */}
 
-      {filteredEvents.length === 0 ? (
+      {sortedEvents.length === 0 ? (
         <div className="empty-state">
           <h3>No matching events found.</h3>
 
           <p>Try searching for another event.</p>
         </div>
       ) : (
-        filteredEvents.map((event) => (
+        sortedEvents.map((event) => (
           <EventCard key={event.id} event={event} onDelete={deleteEvent} />
         ))
       )}
