@@ -11,8 +11,14 @@ Dashboard Page
 Responsibilities
 - Welcome the logged-in user
 - Display dashboard statistics
+- Highlight the next upcoming event
 - Allow users to search their events
-- Display all matching events
+- Display matching events in chronological order
+
+Design Notes
+- The Upcoming Event widget should NEVER change
+  when the user searches.
+- The search box should only affect the event list.
 =====================================================
 */
 
@@ -20,34 +26,78 @@ function Dashboard() {
   // Get the logged-in user
   const { currentUser } = useAuth();
 
-  // Get events from the Event Context
+  // Get all events for the current user
   const { events, deleteEvent } = useEvents();
 
   /*
-    Stores whatever the user types into
-    the search box.
+    Stores the user's search input.
+
+    This makes the search field a controlled
+    React component.
   */
   const [searchTerm, setSearchTerm] = useState("");
 
   /*
-  Derived State
+    =====================================================
+    Sort ALL Events
 
-  First filter the events based on the search term.
+    Used ONLY for the Upcoming Event widget.
 
-  Then create a copy of the filtered array and sort it
-  by date in ascending order (earliest event first).
+    This list is never filtered because the widget
+    should always display the user's next upcoming
+    event regardless of the current search.
+    =====================================================
+  */
+  const sortedAllEvents = [...events].sort(
+    (a, b) => new Date(a.date) - new Date(b.date),
+  );
 
-  We use the spread operator (...) before sort()
-  because sort() mutates arrays and React state
-  should always be treated as immutable.
-*/
+  /*
+    =====================================================
+    Filter Events
+
+    The search box only affects the event list,
+    not the Upcoming Event widget.
+    =====================================================
+  */
   const filteredEvents = events.filter((event) =>
     event.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
+  /*
+    =====================================================
+    Sort Filtered Events
+
+    Create a copy before sorting because sort()
+    mutates arrays and React state should always
+    remain immutable.
+    =====================================================
+  */
   const sortedEvents = [...filteredEvents].sort(
     (a, b) => new Date(a.date) - new Date(b.date),
   );
+
+  /*
+    =====================================================
+    Upcoming Event
+
+    Find the first event that occurs today
+    or in the future.
+
+    Since sortedAllEvents is already sorted,
+    the first matching event is automatically
+    the next upcoming event.
+    =====================================================
+  */
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const upcomingEvent = sortedAllEvents.find((event) => {
+    const eventDate = new Date(event.date);
+    return eventDate >= today;
+  });
+
   return (
     <div className="page">
       {/* ================= Dashboard Header ================= */}
@@ -62,8 +112,7 @@ function Dashboard() {
 
           <div className="dashboard-stats">
             <div className="stat-card">
-              📅 {sortedEvents.length}{" "}
-              {filteredEvents.length === 1 ? "Event" : "Events"}
+              📅 {events.length} {events.length === 1 ? "Event" : "Events"}
             </div>
           </div>
         </div>
@@ -73,7 +122,30 @@ function Dashboard() {
         </Link>
       </div>
 
-      {/* ================= Search Box ================= */}
+      {/* ================= Upcoming Event Widget ================= */}
+
+      {upcomingEvent && (
+        <div className="upcoming-event">
+          <h3>⭐ Next Upcoming Event</h3>
+
+          <h2>{upcomingEvent.title}</h2>
+
+          <p>
+            📅{" "}
+            {new Date(upcomingEvent.date).toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </p>
+
+          <p>🕒 {upcomingEvent.time}</p>
+
+          <p>📍 {upcomingEvent.location}</p>
+        </div>
+      )}
+
+      {/* ================= Search ================= */}
 
       <input
         className="search-input"
@@ -83,7 +155,7 @@ function Dashboard() {
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
-      {/* ================= Empty State ================= */}
+      {/* ================= Event List ================= */}
 
       {sortedEvents.length === 0 ? (
         <div className="empty-state">
