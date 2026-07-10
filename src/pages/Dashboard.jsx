@@ -38,6 +38,17 @@ function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
 
   /*
+=====================================================
+Category Filter
+
+Stores the currently selected category.
+
+"All" displays every event.
+=====================================================
+*/
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  /*
     =====================================================
     Helper Function
 
@@ -66,11 +77,30 @@ function Dashboard() {
   );
 
   /*
-    =====================================================
-    Filter Events
-    =====================================================
-  */
-  const filteredEvents = events.filter((event) =>
+=====================================================
+Filter Events
+
+Filtering happens in two stages.
+
+1. Filter by category.
+2. Filter by search text.
+
+Keeping these separate makes the logic easier
+to understand and maintain.
+=====================================================
+*/
+
+  // First filter by category
+  const categoryFilteredEvents = events.filter((event) => {
+    if (selectedCategory === "All") {
+      return true;
+    }
+
+    return event.category === selectedCategory;
+  });
+
+  // Then filter by search term
+  const filteredEvents = categoryFilteredEvents.filter((event) =>
     event.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
@@ -96,8 +126,57 @@ function Dashboard() {
     =====================================================
   */
 
+  /*
+=====================================================
+Current Date & Time
+
+Used to calculate dashboard statistics and
+determine the next upcoming event.
+=====================================================
+*/
   const now = new Date();
 
+  /*
+=====================================================
+Dashboard Statistics
+
+These values are derived from the event list.
+
+We calculate them every render instead of storing
+them in React state. This avoids duplicate state
+and keeps the dashboard synchronized automatically.
+=====================================================
+*/
+
+  // Total events
+  const totalEvents = events.length;
+
+  // Events that have not happened yet
+  const upcomingEvents = events.filter(
+    (event) => getEventDateTime(event) >= now,
+  );
+
+  // Events that have already happened
+  const pastEvents = events.filter((event) => getEventDateTime(event) < now);
+
+  // Events taking place today
+  const todayEvents = events.filter((event) => {
+    const eventDate = getEventDateTime(event);
+
+    return (
+      eventDate.getDate() === now.getDate() &&
+      eventDate.getMonth() === now.getMonth() &&
+      eventDate.getFullYear() === now.getFullYear()
+    );
+  });
+
+  /*
+=====================================================
+Upcoming Event
+
+The first upcoming event from the sorted list.
+=====================================================
+*/
   const upcomingEvent = sortedAllEvents.find(
     (event) => getEventDateTime(event) >= now,
   );
@@ -116,7 +195,23 @@ function Dashboard() {
 
           <div className="dashboard-stats">
             <div className="stat-card">
-              📅 {events.length} {events.length === 1 ? "Event" : "Events"}
+              <h4>Total</h4>
+              <p>{totalEvents}</p>
+            </div>
+
+            <div className="stat-card">
+              <h4>Upcoming</h4>
+              <p>{upcomingEvents.length}</p>
+            </div>
+
+            <div className="stat-card">
+              <h4>Past</h4>
+              <p>{pastEvents.length}</p>
+            </div>
+
+            <div className="stat-card">
+              <h4>Today</h4>
+              <p>{todayEvents.length}</p>
             </div>
           </div>
         </div>
@@ -148,6 +243,22 @@ function Dashboard() {
           <p>📍 {upcomingEvent.location}</p>
         </div>
       )}
+
+      {/* ================= Category Filter ================= */}
+
+      <select
+        className="category-filter"
+        value={selectedCategory}
+        onChange={(e) => setSelectedCategory(e.target.value)}
+      >
+        <option value="All">All Categories</option>
+        <option value="Work">💼 Work</option>
+        <option value="Fitness">🏋 Fitness</option>
+        <option value="Study">🎓 Study</option>
+        <option value="Family">👨‍👩‍👧 Family</option>
+        <option value="Social">🎉 Social</option>
+        <option value="Personal">📌 Personal</option>
+      </select>
 
       {/* ================= Search ================= */}
 

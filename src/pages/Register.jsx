@@ -40,6 +40,8 @@ function Register() {
   */
   const [error, setError] = useState("");
 
+  // Controls whether the password is visible
+  const [showPassword, setShowPassword] = useState(false);
   /*
     Updates whichever input the user is typing into.
 
@@ -155,15 +157,25 @@ function Register() {
           onChange={handleChange}
         />
 
-        <input
-          id="register-password"
-          name="password"
-          type="password"
-          placeholder="Password"
-          autoComplete="new-password"
-          value={formData.password}
-          onChange={handleChange}
-        />
+        <div className="password-container">
+          <input
+            id="register-password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            autoComplete="new-password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+
+          <button
+            type="button"
+            className="toggle-password-btn"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? "🙈 Hide" : "👁 Show"}
+          </button>
+        </div>
 
         <button type="submit">Register</button>
       </form>

@@ -5,25 +5,38 @@ import { useEvents } from "../context/EventContext";
 import { useEffect, useState } from "react";
 
 /*
-  EditEvent page
+=====================================================
+Edit Event Page
 
+Responsibilities
+- Load the selected event
+- Allow the user to edit event details
+- Allow the user to edit the event category
+- Save changes back to EventContext
+=====================================================
 */
+
 function EditEvent() {
-  const { id } = useParams(); // id is ALWAYS a string
+  const { id } = useParams();
   const navigate = useNavigate();
+
   const { events, updateEvent } = useEvents();
 
   const [formData, setFormData] = useState(null);
 
   /*
-    Load event safely with ID normalization
+  =====================================================
+  Load Event
+
+  Convert IDs to strings to avoid type mismatch
+  between numbers and route parameters.
+  =====================================================
   */
   useEffect(() => {
     if (!events || events.length === 0) {
       return;
     }
 
-    // Convert both IDs to strings before comparison
     const eventToEdit = events.find((event) => String(event.id) === String(id));
 
     if (!eventToEdit) {
@@ -35,7 +48,12 @@ function EditEvent() {
   }, [events, id, navigate]);
 
   /*
-    Handle input changes
+  =====================================================
+  Handle Form Changes
+
+  Uses computed property names so one function can
+  update every form field.
+  =====================================================
   */
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,12 +65,15 @@ function EditEvent() {
   };
 
   /*
-    Submit updated event
+  =====================================================
+  Submit Changes
+  =====================================================
   */
   const handleSubmit = (e) => {
     e.preventDefault();
 
     updateEvent(formData);
+
     navigate("/dashboard");
   };
 
@@ -61,7 +82,7 @@ function EditEvent() {
   }
 
   return (
-    <div className="page">
+    <div className="page auth-container">
       <h2>Edit Event</h2>
 
       <form onSubmit={handleSubmit}>
@@ -92,7 +113,24 @@ function EditEvent() {
           name="location"
           value={formData.location}
           onChange={handleChange}
+          required
         />
+
+        {/* ================= Category ================= */}
+
+        <select
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          required
+        >
+          <option value="Personal">📌 Personal</option>
+          <option value="Work">💼 Work</option>
+          <option value="Fitness">🏋 Fitness</option>
+          <option value="Study">🎓 Study</option>
+          <option value="Family">👨‍👩‍👧 Family</option>
+          <option value="Social">🎉 Social</option>
+        </select>
 
         <textarea
           name="description"

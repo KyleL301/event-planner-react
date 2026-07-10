@@ -1,37 +1,57 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 /*
-  Login page:
-  - Allows registered users to log in
-  - Uses autocomplete attributes for better UX and accessibility
+=====================================================
+Login Page
+
+Responsibilities
+- Authenticate registered users
+- Display validation errors inline
+- Redirect successful logins to the dashboard
+=====================================================
 */
+
 function Login() {
   const { login } = useAuth();
+
   const navigate = useNavigate();
 
-  // Local state for login inputs
+  // Form state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // Error state
+  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   /*
-    Handle login submission:
-    - Calls login(email, password)
-    - Redirects to dashboard on success
+  =====================================================
+  Handle Login Submission
+  =====================================================
   */
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const success = login(email, password);
-    if (success) {
-      navigate("/dashboard");
+    // Clear previous error messages
+    setError("");
+
+    const result = login(email, password);
+
+    if (!result.success) {
+      setError(result.message);
+      return;
     }
+
+    navigate("/dashboard");
   };
 
   return (
     <div className="page auth-container">
       <h2>Login</h2>
+
+      {/* Display authentication errors */}
+      {error && <div className="error-message">{error}</div>}
 
       <form onSubmit={handleSubmit}>
         <input
@@ -44,18 +64,33 @@ function Login() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <input
-          id="login-password"
-          name="password"
-          type="password"
-          placeholder="Password"
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="password-container">
+          <input
+            id="login-password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <button
+            type="button"
+            className="toggle-password-btn"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? "🙈 Hide" : "👁 Show"}
+          </button>
+        </div>
 
         <button type="submit">Login</button>
       </form>
+
+      {/* Password recovery */}
+      <p className="forgot-password">
+        <Link to="/forgot-password">Forgot Password?</Link>
+      </p>
     </div>
   );
 }

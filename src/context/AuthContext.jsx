@@ -1,38 +1,45 @@
 import { createContext, useContext, useState } from "react";
 
 /*
-  AuthContext is responsible for:
-  - Storing registered users
-  - Managing login/logout
-  - Making sure users must register before logging in
+=====================================================
+Auth Context
+
+Responsibilities
+- Register users
+- Log users in
+- Log users out
+- Reset forgotten passwords
+- Persist authentication data in localStorage
+=====================================================
 */
+
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  // Load all registered users from localStorage (or empty array)
+  // Load all registered users from localStorage
   const [users, setUsers] = useState(
     JSON.parse(localStorage.getItem("users")) || [],
   );
 
-  // Load the currently logged-in user (if any)
+  // Load the currently logged-in user
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(localStorage.getItem("currentUser")) || null,
   );
 
   /*
-    Registers a new user:
-    - Prevents duplicate email registrations
-    - Saves the user to localStorage
-    - DOES NOT log them in automatically
-    - User must log in manually after registering
+  =====================================================
+  Register
+
+  - Prevent duplicate email registrations
+  - Validate password strength
+  - Save the new user
+  =====================================================
   */
   const register = (userData) => {
-    // Check if a user with this email already exists
     const existingUser = users.find(
       (user) => user.email?.toLowerCase() === userData.email?.toLowerCase(),
     );
 
-    // Stop registration if the email is already registered
     if (existingUser) {
       return {
         success: false,
@@ -40,7 +47,7 @@ export function AuthProvider({ children }) {
       };
     }
 
-    // Password must meet minimum security requirements
+    // Password requirements
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
     if (!passwordRegex.test(userData.password)) {
@@ -51,45 +58,125 @@ export function AuthProvider({ children }) {
       };
     }
 
-    // Add the new user
     const updatedUsers = [...users, userData];
 
-    // Update state
     setUsers(updatedUsers);
 
-    // Save to localStorage
     localStorage.setItem("users", JSON.stringify(updatedUsers));
 
-    // Tell the calling component that registration succeeded
     return {
       success: true,
     };
   };
 
   /*
-    Logs a user in ONLY if they already exist.
-    If the user does not exist, login is blocked.
-  */
+=====================================================
+Login
+
+Authenticates an existing user.
+
+Returns:
+- success: true when authentication succeeds
+- success: false with an error message when it fails
+=====================================================
+*/
   const login = (email, password) => {
     const existingUser = users.find(
-      (user) => user.email === email && user.password === password,
+      (user) =>
+        user.email.toLowerCase() === email.toLowerCase() &&
+        user.password === password,
     );
 
     if (!existingUser) {
-      alert("User not found. Please register first.");
-      return false;
+      return {
+        success: false,
+        message: "Invalid email or password.",
+      };
     }
 
     setCurrentUser(existingUser);
+
     localStorage.setItem("currentUser", JSON.stringify(existingUser));
-    return true;
+
+    return {
+      success: true,
+    };
   };
 
   /*
-    Logs out the current user
+  =====================================================
+  Reset Password
+
+  Simulates a password recovery flow.
+
+  Steps:
+  1. Verify the email exists.
+  2. Replace only that user's password.
+  3. Save the updated users array.
+  4. Return success or failure.
+  =====================================================
+  */
+  const resetPassword = (email, newPassword) => {
+    // Check whether the email exists
+    const existingUser = users.find(
+      (user) => user.email.toLowerCase() === email.toLowerCase(),
+    );
+
+    if (!existingUser) {
+      return {
+        success: false,
+        message: "No account found with that email.",
+      };
+    }
+
+    // Validate the new password
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    if (!passwordRegex.test(newPassword)) {
+      return {
+        success: false,
+        message:
+          "Password must be at least 8 characters and include an uppercase letter, a lowercase letter, and a number.",
+      };
+    }
+
+    /*
+      Create a NEW users array.
+
+      We use map() so that only the matching
+      user receives a new password.
+
+      Every other user remains unchanged.
+    */
+    const updatedUsers = users.map((user) =>
+      user.email.toLowerCase() === email.toLowerCase()
+        ? {
+            ...user,
+            password: newPassword,
+          }
+        : user,
+    );
+
+    // Update React state
+    setUsers(updatedUsers);
+
+    // Persist to localStorage
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+
+    return {
+      success: true,
+      message: "Password updated successfully.",
+    };
+  };
+
+  /*
+  =====================================================
+  Logout
+  =====================================================
   */
   const logout = () => {
     setCurrentUser(null);
+
     localStorage.removeItem("currentUser");
   };
 
@@ -100,6 +187,7 @@ export function AuthProvider({ children }) {
         register,
         login,
         logout,
+        resetPassword,
       }}
     >
       {children}
@@ -107,7 +195,7 @@ export function AuthProvider({ children }) {
   );
 }
 
-// Custom hook to access auth context
+// Custom Hook
 export function useAuth() {
   return useContext(AuthContext);
 }
