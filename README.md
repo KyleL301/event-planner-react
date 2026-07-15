@@ -1,41 +1,73 @@
 # 📅 React Event Planner
 
-A modern event management web application built with **React**, **Vite**, and the **React Context API**. The application allows users to securely register, log in, and manage their own personal events through a clean and responsive interface.
+A modern event management web application built with **React**, **Vite**, and the **React Context API**.
+
+The application allows users to securely register, log in, and manage their own personal events through a clean and responsive interface.
 
 This project was originally developed as part of my software development learning journey and has since been continuously improved with additional features, UI enhancements, validation, and better software engineering practices to serve as a portfolio project.
 
 ---
 
-## 🚀 Features
+## 🌐 Live Demo
 
-### 🔐 Authentication
+https://event-planner-react-sage.vercel.app
+
+---
+
+## 📂 GitHub Repository
+
+https://github.com/KyleL301/event-planner-react
+
+---
+
+# 🚀 Features
+
+## 🔐 Authentication
+
 - User registration
 - Secure login and logout
 - Protected routes
 - Duplicate email validation
-- Password validation
+- Password strength validation
+- Forgot password recovery
+- Password visibility toggle
+- Persistent login sessions using Local Storage
 - User-specific dashboards
 
-### 📅 Event Management
+---
+
+## 📅 Event Management
+
 - Create new events
 - Edit existing events
 - Delete events
 - Event ownership (users only see their own events)
+- Event categories
+- Event descriptions and locations
 - Local data persistence using Local Storage
 
-### 📊 Dashboard
+---
+
+## 📊 Dashboard
+
 - Personalized welcome message
 - Dashboard statistics
+- Upcoming event widget
 - Event search functionality
+- Chronological event sorting using date and time
 - Responsive event cards
-- Professional event layout
+- Professional dashboard layout
 
-### 🎨 User Experience
+---
+
+## 🎨 User Experience
+
 - Responsive navigation
 - Clean interface
-- Form validation
-- Improved dashboard layout
+- Inline validation messages
 - Professional styling using CSS
+- Mobile-friendly layout
+- Improved user feedback and usability
 
 ---
 
@@ -51,17 +83,19 @@ This project was originally developed as part of my software development learnin
 - Local Storage
 - Git
 - GitHub
+- Vercel
 
 ---
 
 # 📂 Project Structure
 
-```
+```text
 src/
 │
 ├── components/
 │   ├── Header.jsx
 │   ├── EventCard.jsx
+│   ├── ProtectedRoute.jsx
 │   └── Layout.jsx
 │
 ├── context/
@@ -72,6 +106,7 @@ src/
 │   ├── Dashboard.jsx
 │   ├── Login.jsx
 │   ├── Register.jsx
+│   ├── ForgotPassword.jsx
 │   ├── AddEvent.jsx
 │   ├── EditEvent.jsx
 │   └── Help.jsx
@@ -79,7 +114,9 @@ src/
 ├── styles/
 │   └── main.css
 │
-└── router.jsx
+├── router.jsx
+├── App.jsx
+└── main.jsx
 ```
 
 The application follows a component-based architecture where reusable UI components, global state management, and page-level components are separated to improve maintainability and scalability.
@@ -88,57 +125,81 @@ The application follows a component-based architecture where reusable UI compone
 
 # 📸 Application Screenshots
 
-> **Dashboard**
+## Login Page
 
-*(Insert dashboard screenshot here)*
-
----
-
-> **Login**
-
-*(Insert login screenshot here)*
+![Login Page](./public/screenshots/login-page.png)
 
 ---
 
-> **Register**
+## Register Page
 
-*(Insert register screenshot here)*
+![Register Page](./public/screenshots/register-page.png)
 
 ---
 
-> **Add Event**
+## Forgot Password
 
-*(Insert add event screenshot here)*
+![Forgot Password](./public/screenshots/forgot-password-page.png)
+
+---
+
+## Dashboard Overview
+
+![Dashboard Overview](./public/screenshots/dashboard-overview.png)
+
+---
+
+## Upcoming Event Widget
+
+![Upcoming Event Widget](./public/screenshots/upcoming-event-widget.png)
+
+---
+
+## Add Event Page
+
+![Add Event Page](./public/screenshots/add-event-page.png)
+
+---
+
+## Event Cards
+
+![Event Cards](./public/screenshots/event-cards.png)
 
 ---
 
 # ⚙️ Installation
 
-Clone the repository
+## Clone the repository
 
 ```bash
 git clone https://github.com/KyleL301/event-planner-react.git
 ```
 
-Navigate into the project
+## Navigate into the project
 
 ```bash
 cd event-planner-react
 ```
 
-Install dependencies
+## Install dependencies
 
 ```bash
 npm install
 ```
 
-Run the development server
+## Run the development server
 
 ```bash
 npm run dev
 ```
 
-Open the application using the local development URL displayed in the terminal.
+Open the local development URL displayed in the terminal.
+
+Typically:
+
+```text
+http://localhost:5173
+```
 
 ---
 
@@ -151,47 +212,52 @@ While developing this project I strengthened my understanding of:
 - React Router and protected routes
 - Controlled forms
 - CRUD operations
-- JavaScript array methods (`map`, `filter`)
+- JavaScript array methods (`map`, `filter`, `find`, `sort`)
 - Client-side authentication
-- Local Storage
-- Writing reusable components
+- Local Storage persistence
+- Building reusable components
+- Conditional rendering
+- Form validation
 - Git version control and feature-based commits
+- Deployment using Vercel
 
 ---
 
 # 🔮 Future Improvements
 
-The project is actively being improved. Planned enhancements include:
+Potential future enhancements include:
 
-- Event sorting by upcoming date
-- Event categories
-- Dashboard analytics
-- Calendar view
 - Backend API using Node.js and Express
 - MongoDB database integration
-- User profile page
+- JWT authentication
+- Email verification
+- Push notifications
+- Calendar integration
+- Recurring events
+- User profile management
 - Email reminders
-- Dark mode
-- Live deployment
+- Dark mode support
 
 ---
 
 # 👨‍💻 Author
 
-**Kyle Liberty**
+## Kyle Liberty
 
 Aspiring Software Developer | React Developer | Full Stack Developer
 
-GitHub:
+### GitHub
+
 https://github.com/KyleL301
 
-LinkedIn:
-www.linkedin.com/in/kyle-liberty-7747b0142
+### LinkedIn
+
+https://www.linkedin.com/in/kyle-liberty-7747b0142
 
 ---
 
-## ⭐ Project Status
+# ⭐ Project Status
 
-🚧 **Actively Developed**
+✅ Portfolio Project Complete
 
-This project continues to evolve as I learn new technologies and apply software engineering best practices.
+This project continues to receive improvements as new technologies and software engineering practices are learned and adopted.
